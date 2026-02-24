@@ -1,0 +1,19 @@
+{
+    "name": "@ecommerce/notification-service",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+        "build": "tsc",
+        "start": "node dist/index.js",
+        "dev": "ts-node src/index.ts"
+    },
+    "dependencies": {
+        "@ecommerce/common": "*",
+        "@ecommerce/shared-types": "*",
+        "amqplib": "^0.10.3"
+    },
+    "devDependencies": {
+        "typescript": "^5.3.3",
+        "ts-node": "^10.9.2"
+    }
+}

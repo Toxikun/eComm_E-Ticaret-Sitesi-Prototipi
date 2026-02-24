@@ -1,0 +1,24 @@
+{
+  "name": "ecommerce-microservices",
+  "version": "1.0.0",
+  "private": true,
+  "description": "E-Commerce Platform — Microservices Architecture",
+  "workspaces": [
+    "packages/*",
+    "services/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "dev": "docker compose up --build",
+    "lint": "eslint . --ext .ts",
+    "clean": "rimraf **/dist **/node_modules"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "typescript": "^5.3.3",
+    "rimraf": "^5.0.5"
+  }
+}

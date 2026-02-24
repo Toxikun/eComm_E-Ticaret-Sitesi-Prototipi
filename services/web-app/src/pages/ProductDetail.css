@@ -1,0 +1,134 @@
+.detail-page {
+    padding: 40px 0;
+    animation: fadeIn 0.4s ease;
+}
+
+.detail-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: start;
+}
+
+.detail-image {
+    aspect-ratio: 1;
+    border-radius: var(--radius-lg);
+    background: var(--bg-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 6rem;
+    overflow: hidden;
+    border: 1px solid var(--border);
+}
+
+.detail-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.detail-info .category {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.detail-info h1 {
+    font-size: 2rem;
+    margin-bottom: 16px;
+}
+
+.detail-info .price {
+    font-size: 2rem;
+    font-weight: 800;
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 16px;
+}
+
+.detail-info .description {
+    color: var(--text-secondary);
+    line-height: 1.8;
+    margin-bottom: 24px;
+}
+
+.quantity-selector {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.quantity-selector label {
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.quantity-selector .qty-controls {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.quantity-selector .qty-controls button {
+    padding: 8px 14px;
+    background: var(--bg-glass);
+    color: var(--text-primary);
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    transition: background var(--transition-fast);
+}
+
+.quantity-selector .qty-controls button:hover {
+    background: var(--bg-glass-hover);
+}
+
+.quantity-selector .qty-controls span {
+    padding: 8px 16px;
+    font-weight: 600;
+    font-size: 1rem;
+    min-width: 48px;
+    text-align: center;
+}
+
+.detail-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 24px;
+}
+
+.back-link:hover {
+    color: var(--text-primary);
+}
+
+@media (max-width: 768px) {
+    .detail-layout {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+
+    .detail-info h1 {
+        font-size: 1.5rem;
+    }
+
+    .detail-info .price {
+        font-size: 1.5rem;
+    }
+}

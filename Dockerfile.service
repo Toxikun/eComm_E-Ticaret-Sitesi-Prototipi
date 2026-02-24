@@ -1,0 +1,20 @@
+FROM node:20-alpine
+WORKDIR /app
+ARG SERVICE_NAME
+ARG SERVICE_PORT
+ENV SERVICE_NAME=${SERVICE_NAME}
+
+COPY package.json package-lock.json tsconfig.base.json ./
+COPY packages/ ./packages/
+
+COPY services/${SERVICE_NAME}/package.json ./services/${SERVICE_NAME}/package.json
+COPY services/${SERVICE_NAME}/tsconfig.json ./services/${SERVICE_NAME}/tsconfig.json
+COPY services/${SERVICE_NAME}/src/ ./services/${SERVICE_NAME}/src/
+
+RUN npm install --workspace=@ecommerce/${SERVICE_NAME} --workspace=@ecommerce/shared-types --workspace=@ecommerce/common 2>/dev/null || npm install
+RUN npm run build --workspace=@ecommerce/shared-types 2>/dev/null; \
+    npm run build --workspace=@ecommerce/common 2>/dev/null; \
+    npm run build --workspace=@ecommerce/${SERVICE_NAME} 2>/dev/null || true
+
+EXPOSE ${SERVICE_PORT}
+CMD ["sh", "-c", "node services/${SERVICE_NAME}/dist/index.js"]

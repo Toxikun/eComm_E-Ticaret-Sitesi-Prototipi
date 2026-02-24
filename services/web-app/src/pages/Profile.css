@@ -1,0 +1,47 @@
+.profile-page {
+    padding: 40px 0;
+    animation: fadeIn 0.4s ease;
+    display: flex;
+    justify-content: center;
+}
+
+.profile-card {
+    max-width: 480px;
+    width: 100%;
+    padding: 40px;
+    text-align: center;
+}
+
+.profile-avatar {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    background: var(--accent-gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: white;
+    margin: 0 auto 20px;
+    box-shadow: var(--accent-glow);
+}
+
+.profile-card h2 {
+    margin-bottom: 4px;
+}
+
+.profile-email {
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+
+.profile-role {
+    margin-bottom: 32px;
+}
+
+.profile-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}

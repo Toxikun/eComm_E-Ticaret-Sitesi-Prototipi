@@ -1,0 +1,88 @@
+.orders-page {
+    padding: 40px 0;
+    animation: fadeIn 0.4s ease;
+}
+
+.orders-page h1 {
+    margin-bottom: 32px;
+}
+
+.orders-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.order-card {
+    padding: 24px;
+}
+
+.order-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.order-id {
+    font-family: monospace;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.order-amount {
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.order-meta {
+    display: flex;
+    gap: 24px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.status-badge {
+    padding: 4px 12px;
+    border-radius: var(--radius-full);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.status-PENDING {
+    background: var(--warning-soft);
+    color: var(--warning);
+}
+
+.status-CONFIRMED {
+    background: var(--info-soft);
+    color: var(--info);
+}
+
+.status-PROCESSING {
+    background: var(--accent-soft);
+    color: var(--accent);
+}
+
+.status-SHIPPED {
+    background: var(--info-soft);
+    color: var(--info);
+}
+
+.status-DELIVERED {
+    background: var(--success-soft);
+    color: var(--success);
+}
+
+.status-CANCELLED {
+    background: var(--error-soft);
+    color: var(--error);
+}
+
+.status-REFUNDED {
+    background: var(--warning-soft);
+    color: var(--warning);
+}
