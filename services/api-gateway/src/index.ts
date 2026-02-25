@@ -19,7 +19,7 @@ app.use(morgan('combined'));
 // ─── Rate Limiting ───
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100,
+    max: 1000, // raised for development
     standardHeaders: true,
     legacyHeaders: false,
     message: { error: 'Too many requests, please try again later.' },

@@ -1,4 +1,5 @@
 import express from 'express';
+import path from 'path';
 import { createLogger, loadConfig, errorHandler, MessageBroker } from '@ecommerce/common';
 import { Pool } from 'pg';
 import { productRoutes } from './routes/product.routes';
@@ -18,6 +19,10 @@ let broker: MessageBroker | undefined;
 
 const app = express();
 app.use(express.json());
+
+// Serve uploaded product images as static files
+const uploadsDir = path.join(__dirname, '..', 'uploads');
+app.use('/uploads', express.static(uploadsDir));
 
 app.get('/health', (_req, res) => {
     res.json({ status: 'healthy', service: config.serviceName });

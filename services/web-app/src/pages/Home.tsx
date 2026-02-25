@@ -22,7 +22,7 @@ export default function Home() {
 
             <section className="home-features">
                 <div className="container">
-                    <h2>Why AntiGravity?</h2>
+                    <h2>Why eComm?</h2>
                     <div className="features-grid stagger">
                         <div className="glass-card feature-card animate-slide-up">
                             <div className="feature-icon">🚀</div>

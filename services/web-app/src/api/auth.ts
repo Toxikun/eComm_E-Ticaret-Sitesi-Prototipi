@@ -19,10 +19,10 @@ export async function loginApi(email: string, password: string): Promise<AuthRes
     });
 }
 
-export async function registerApi(email: string, password: string, name: string): Promise<AuthResponse> {
+export async function registerApi(email: string, password: string, name: string, role?: string): Promise<AuthResponse> {
     return apiFetch<AuthResponse>('/auth/register', {
         method: 'POST',
-        body: JSON.stringify({ email, password, name }),
+        body: JSON.stringify({ email, password, name, role }),
     });
 }
 

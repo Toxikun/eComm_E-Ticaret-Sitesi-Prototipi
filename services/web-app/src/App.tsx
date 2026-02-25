@@ -11,6 +11,7 @@ import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import Orders from './pages/Orders';
 import Profile from './pages/Profile';
+import AddProduct from './pages/AddProduct';
 
 export default function App() {
     return (
@@ -23,6 +24,7 @@ export default function App() {
                         <Route path="/register" element={<Register />} />
                         <Route path="/products" element={<Products />} />
                         <Route path="/products/:id" element={<ProductDetail />} />
+                        <Route path="/add-product" element={<ProtectedRoute><AddProduct /></ProtectedRoute>} />
                         <Route path="/cart" element={<ProtectedRoute><Cart /></ProtectedRoute>} />
                         <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
                         <Route path="/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />

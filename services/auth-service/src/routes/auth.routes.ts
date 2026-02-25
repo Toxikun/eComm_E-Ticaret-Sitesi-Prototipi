@@ -11,11 +11,14 @@ export function authRoutes(pool: Pool, config: ServiceConfig, logger: Logger): R
     // ─── POST /register ───
     router.post('/register', async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const { email, password, name } = req.body;
+            const { email, password, name, role } = req.body;
 
             if (!email || !password || !name) {
                 throw new AppError(400, 'Email, password, and name are required');
             }
+
+            // Allowed roles for registration (in a real app, this would be restricted)
+            const userRole = (role === 'SELLER' || role === 'ADMIN') ? role : 'CUSTOMER';
 
             // Check for existing user
             const existing = await pool.query('SELECT id FROM users WHERE email = $1', [email]);
@@ -28,11 +31,11 @@ export function authRoutes(pool: Pool, config: ServiceConfig, logger: Logger): R
 
             await pool.query(
                 'INSERT INTO users (id, email, password_hash, name, role) VALUES ($1, $2, $3, $4, $5)',
-                [id, email, hashedPassword, name, 'CUSTOMER']
+                [id, email, hashedPassword, name, userRole]
             );
 
             const accessToken = jwt.sign(
-                { userId: id, role: 'CUSTOMER' },
+                { userId: id, role: userRole },
                 config.jwt.secret,
                 { expiresIn: config.jwt.expiresIn } as jwt.SignOptions
             );
@@ -46,7 +49,7 @@ export function authRoutes(pool: Pool, config: ServiceConfig, logger: Logger): R
             logger.info({ userId: id, email }, 'User registered');
 
             res.status(201).json({
-                user: { id, email, name, role: 'CUSTOMER' },
+                user: { id, email, name, role: userRole },
                 accessToken,
                 refreshToken,
                 expiresIn: config.jwt.expiresIn,

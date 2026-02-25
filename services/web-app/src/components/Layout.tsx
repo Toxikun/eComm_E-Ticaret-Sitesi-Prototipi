@@ -25,7 +25,7 @@ export default function Layout() {
         <>
             <header className="layout-header">
                 <div className="container">
-                    <Link to="/" className="header-logo">⚡ AntiGravity</Link>
+                    <Link to="/" className="header-logo">🛒 eComm</Link>
 
                     <button className="mobile-menu-btn" onClick={() => setMenuOpen(!menuOpen)}>
                         {menuOpen ? '✕' : '☰'}
@@ -33,6 +33,9 @@ export default function Layout() {
 
                     <nav className={`header-nav ${menuOpen ? 'open' : ''}`}>
                         <Link to="/products" className={isActive('/products')}>Products</Link>
+                        {(user?.role === 'SELLER' || user?.role === 'ADMIN') && (
+                            <Link to="/add-product" className={isActive('/add-product')}>Add Product</Link>
+                        )}
 
                         {user ? (
                             <>
@@ -62,7 +65,7 @@ export default function Layout() {
 
             <footer className="layout-footer">
                 <div className="container">
-                    © 2026 AntiGravity. Built with microservices.
+                    © 2026 eComm. Built with microservices.
                 </div>
             </footer>
         </>

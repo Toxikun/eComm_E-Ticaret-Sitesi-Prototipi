@@ -3,6 +3,15 @@ import { Link } from 'react-router-dom';
 import { getProducts, type Product, type ProductQuery } from '../api/products';
 import './Products.css';
 
+// Resolve image URL: uploaded files go through the API gateway
+function resolveImageUrl(url: string): string {
+    if (!url) return '';
+    if (url.startsWith('/uploads/')) {
+        return `/api/product-uploads${url.replace('/uploads', '')}`;
+    }
+    return url;
+}
+
 export default function Products() {
     const [products, setProducts] = useState<Product[]>([]);
     const [total, setTotal] = useState(0);
@@ -37,8 +46,9 @@ export default function Products() {
     };
 
     const getStockLabel = (stock: number) => {
-        if (stock <= 0) return { text: 'Out of stock', cls: 'out-of-stock' };
-        if (stock < 10) return { text: `Only ${stock} left`, cls: 'low-stock' };
+        const s = Number(stock);
+        if (s <= 0) return { text: 'Out of stock', cls: 'out-of-stock' };
+        if (s < 10) return { text: `Only ${s} left`, cls: 'low-stock' };
         return { text: 'In stock', cls: 'in-stock' };
     };
 
@@ -85,7 +95,7 @@ export default function Products() {
                                         <div className="glass-card product-card animate-slide-up">
                                             <div className="product-image">
                                                 {product.image_url ? (
-                                                    <img src={product.image_url} alt={product.name} />
+                                                    <img src={resolveImageUrl(product.image_url)} alt={product.name} />
                                                 ) : (
                                                     '📦'
                                                 )}
@@ -93,7 +103,7 @@ export default function Products() {
                                             <div className="product-info">
                                                 <div className="category">{product.category}</div>
                                                 <h3>{product.name}</h3>
-                                                <div className="price">${product.price.toFixed(2)}</div>
+                                                <div className="price">${Number(product.price).toFixed(2)}</div>
                                                 <div className={`stock ${stock.cls}`}>{stock.text}</div>
                                             </div>
                                         </div>

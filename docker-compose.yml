@@ -131,6 +131,8 @@ services:
       POSTGRES_PASSWORD: postgres
       JWT_SECRET: dev-super-secret-key-2024
       RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
+    volumes:
+      - product-uploads:/app/services/product-service/uploads
     depends_on:
       postgres:
         condition: service_healthy
@@ -235,3 +237,4 @@ services:
 
 volumes:
   pgdata:
+  product-uploads:

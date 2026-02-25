@@ -9,6 +9,7 @@ export default function Register() {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [role, setRole] = useState('CUSTOMER');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
@@ -23,7 +24,7 @@ export default function Register() {
 
         setLoading(true);
         try {
-            await register(email, password, name);
+            await register(email, password, name, role);
             navigate('/products');
         } catch (err: any) {
             setError(err.message || 'Registration failed');
@@ -36,7 +37,7 @@ export default function Register() {
         <div className="auth-page">
             <div className="glass-card auth-card">
                 <h2>Create Account</h2>
-                <p className="auth-subtitle">Join AntiGravity today</p>
+                <p className="auth-subtitle">Join eComm today</p>
 
                 {error && <div className="alert alert-error">{error}</div>}
 
@@ -79,6 +80,19 @@ export default function Register() {
                             required
                             minLength={6}
                         />
+                    </div>
+
+                    <div className="form-group">
+                        <label className="form-label" htmlFor="reg-role">Account Type</label>
+                        <select
+                            id="reg-role"
+                            className="form-input"
+                            value={role}
+                            onChange={(e) => setRole(e.target.value)}
+                        >
+                            <option value="CUSTOMER">Customer (Buyer)</option>
+                            <option value="SELLER">Seller (Accepted User)</option>
+                        </select>
                     </div>
 
                     <button type="submit" className="btn btn-primary btn-full btn-lg" disabled={loading}>

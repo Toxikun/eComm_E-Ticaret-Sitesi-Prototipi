@@ -23,6 +23,11 @@ const services: ServiceRoute[] = [
         name: 'user-service',
     },
     {
+        path: '/api/product-uploads',
+        target: process.env.PRODUCT_SERVICE_URL || 'http://product-service:3003',
+        name: 'product-uploads',
+    },
+    {
         path: '/api/products',
         target: process.env.PRODUCT_SERVICE_URL || 'http://product-service:3003',
         name: 'product-service',
@@ -57,8 +62,18 @@ export function setupRoutes(app: Express): void {
                 target,
                 changeOrigin: true,
                 pathRewrite: { [`^${path}`]: '' },
-                onProxyReq: (_proxyReq: ClientRequest, req: IncomingMessage) => {
-                    logger.info({ method: req.method, path: req.url, target: name }, 'Proxying request');
+                onProxyReq: (proxyReq, req: any) => {
+                    // Do NOT re-serialize the body for multipart/form-data (file uploads)
+                    const contentType = req.headers['content-type'] || '';
+                    if (contentType.includes('multipart/form-data')) {
+                        return; // let http-proxy-middleware stream the raw body
+                    }
+                    if (req.body && Object.keys(req.body).length > 0) {
+                        const bodyData = JSON.stringify(req.body);
+                        proxyReq.setHeader('Content-Type', 'application/json');
+                        proxyReq.setHeader('Content-Length', Buffer.byteLength(bodyData));
+                        proxyReq.write(bodyData);
+                    }
                 },
                 onError: (err, _req, res) => {
                     logger.error({ err, service: name }, 'Proxy error');
