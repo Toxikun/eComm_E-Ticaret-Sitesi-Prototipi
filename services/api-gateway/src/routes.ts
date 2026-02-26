@@ -52,6 +52,11 @@ const services: ServiceRoute[] = [
         target: process.env.INVENTORY_SERVICE_URL || 'http://inventory-service:3007',
         name: 'inventory-service',
     },
+    {
+        path: '/api/notifications',
+        target: process.env.NOTIFICATION_SERVICE_URL || 'http://notification-service:3008',
+        name: 'notification-service',
+    },
 ];
 
 export function setupRoutes(app: Express): void {

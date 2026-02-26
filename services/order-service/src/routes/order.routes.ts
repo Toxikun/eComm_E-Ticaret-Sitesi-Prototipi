@@ -7,6 +7,8 @@ import { ServiceConfig, Logger, AppError, AuthRequest, MessageBroker } from '@ec
 const CART_SERVICE_URL = process.env.CART_SERVICE_URL || 'http://cart-service:3004';
 const INVENTORY_SERVICE_URL = process.env.INVENTORY_SERVICE_URL || 'http://inventory-service:3007';
 const PAYMENT_SERVICE_URL = process.env.PAYMENT_SERVICE_URL || 'http://payment-service:3006';
+const PRODUCT_SERVICE_URL = process.env.PRODUCT_SERVICE_URL || 'http://product-service:3003';
+const USER_SERVICE_URL = process.env.USER_SERVICE_URL || 'http://user-service:3002';
 
 export function orderRoutes(
     pool: Pool,
@@ -101,12 +103,38 @@ export function orderRoutes(
                 headers: { Authorization: req.headers.authorization! },
             }).catch(() => { });
 
-            // Step 6 — Publish event
+            // Step 6 — Collect seller IDs from products
+            const sellerIds: string[] = [];
+            for (const item of cart.items) {
+                try {
+                    const prodRes = await axios.get(`${PRODUCT_SERVICE_URL}/${item.productId}`);
+                    if (prodRes.data?.seller_id) {
+                        sellerIds.push(prodRes.data.seller_id);
+                    }
+                } catch {
+                    // product lookup failed — skip silently
+                }
+            }
+
+            // Step 6.5 — Fetch buyer name
+            let buyerName = 'Unknown Buyer';
+            try {
+                const userRes = await axios.get(`${USER_SERVICE_URL}/${userId}`, {
+                    headers: { Authorization: req.headers.authorization! }
+                });
+                if (userRes.data?.name) {
+                    buyerName = userRes.data.name;
+                }
+            } catch {
+                // ignore
+            }
+
+            // Step 7 — Publish event (with sellerIds, buyerName, shippingAddress)
             const broker = getBroker();
             if (broker) {
                 await broker.publishToExchange('ecommerce.events', 'order.placed', {
                     type: 'order.placed',
-                    data: { orderId, userId, items: cart.items, totalAmount: cart.totalAmount },
+                    data: { orderId, userId, buyerName, shippingAddress, items: cart.items, totalAmount: cart.totalAmount, sellerIds: [...new Set(sellerIds)] },
                     timestamp: new Date().toISOString(),
                 });
             }

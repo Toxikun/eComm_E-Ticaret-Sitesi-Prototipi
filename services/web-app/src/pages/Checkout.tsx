@@ -1,14 +1,13 @@
-import { useState, useEffect, FormEvent } from 'react';
+import { useState, FormEvent } from 'react';
 import { Link } from 'react-router-dom';
-import { getCart, type Cart } from '../api/cart';
 import { createOrder } from '../api/orders';
 import { useAuth } from '../context/AuthContext';
+import { useCart } from '../context/CartContext';
 import './Checkout.css';
 
 export default function Checkout() {
     const { user } = useAuth();
-    const [cart, setCart] = useState<Cart | null>(null);
-    const [loading, setLoading] = useState(true);
+    const { items, totalAmount, loading, refreshCart } = useCart();
     const [placing, setPlacing] = useState(false);
     const [error, setError] = useState('');
     const [orderId, setOrderId] = useState<string | null>(null);
@@ -16,14 +15,6 @@ export default function Checkout() {
     const [address, setAddress] = useState('');
     const [city, setCity] = useState('');
     const [zip, setZip] = useState('');
-
-    useEffect(() => {
-        if (!user) return;
-        getCart(user.id)
-            .then(setCart)
-            .catch(() => { })
-            .finally(() => setLoading(false));
-    }, [user]);
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
@@ -33,6 +24,7 @@ export default function Checkout() {
             const shippingAddress = `${address}, ${city} ${zip}`;
             const result = await createOrder({ shippingAddress });
             setOrderId(result.orderId);
+            await refreshCart();
         } catch (err: any) {
             setError(err.message || 'Failed to place order');
         } finally {
@@ -59,8 +51,6 @@ export default function Checkout() {
             </div>
         );
     }
-
-    const items = cart?.items || [];
 
     if (items.length === 0) {
         return (
@@ -99,7 +89,7 @@ export default function Checkout() {
                                 <input className="form-input" value={zip} onChange={(e) => setZip(e.target.value)} placeholder="10001" required />
                             </div>
                             <button type="submit" className="btn btn-primary btn-full btn-lg" disabled={placing}>
-                                {placing ? <span className="spinner" /> : `Place Order — $${cart?.totalAmount.toFixed(2)}`}
+                                {placing ? <span className="spinner" /> : `Place Order — $${totalAmount.toFixed(2)}`}
                             </button>
                         </form>
                     </div>
@@ -116,7 +106,7 @@ export default function Checkout() {
                         </div>
                         <div className="checkout-total">
                             <span>Total</span>
-                            <span className="amount">${cart?.totalAmount.toFixed(2)}</span>
+                            <span className="amount">${totalAmount.toFixed(2)}</span>
                         </div>
                     </div>
                 </div>

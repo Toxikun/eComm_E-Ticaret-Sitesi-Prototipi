@@ -1,14 +1,28 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { getProduct, type Product } from '../api/products';
-import { addToCart } from '../api/cart';
-import { useAuth } from '../context/AuthContext';
+import { useCart } from '../context/CartContext';
 import './ProductDetail.css';
+
+// Resolve image URL: uploaded files go through the API gateway
+function resolveImageUrl(url: string): string {
+    if (!url) return '';
+    if (url.startsWith('/uploads/')) {
+        return `/api/product-uploads${url.replace('/uploads', '')}`;
+    }
+    return url;
+}
+
+function getStockLabel(stock: number) {
+    const s = Number(stock);
+    if (s <= 0) return { text: 'Out of stock', cls: 'out-of-stock' };
+    if (s < 10) return { text: `Only ${s} left`, cls: 'low-stock' };
+    return { text: 'In stock', cls: 'in-stock' };
+}
 
 export default function ProductDetail() {
     const { id } = useParams<{ id: string }>();
-    const { user } = useAuth();
-    const navigate = useNavigate();
+    const { addItem } = useCart();
     const [product, setProduct] = useState<Product | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -26,16 +40,13 @@ export default function ProductDetail() {
     }, [id]);
 
     const handleAddToCart = async () => {
-        if (!user) { navigate('/login'); return; }
         if (!product) return;
         setAdding(true);
         try {
-            await addToCart(user.id, {
-                productId: product.id,
-                productName: product.name,
-                unitPrice: product.price,
-                quantity: qty,
-            });
+            await addItem(
+                { id: product.id, name: product.name, price: Number(product.price) },
+                qty,
+            );
             setAdded(true);
             setTimeout(() => setAdded(false), 2000);
         } catch (err: any) {
@@ -49,6 +60,8 @@ export default function ProductDetail() {
     if (error) return <div className="container" style={{ padding: '40px 0' }}><div className="alert alert-error">{error}</div></div>;
     if (!product) return null;
 
+    const stock = getStockLabel(product.stock);
+
     return (
         <div className="detail-page">
             <div className="container">
@@ -57,7 +70,7 @@ export default function ProductDetail() {
                 <div className="detail-layout">
                     <div className="detail-image">
                         {product.image_url ? (
-                            <img src={product.image_url} alt={product.name} />
+                            <img src={resolveImageUrl(product.image_url)} alt={product.name} />
                         ) : (
                             '📦'
                         )}
@@ -66,7 +79,8 @@ export default function ProductDetail() {
                     <div className="detail-info">
                         <div className="category">{product.category}</div>
                         <h1>{product.name}</h1>
-                        <div className="price">${product.price.toFixed(2)}</div>
+                        <div className="price">${Number(product.price).toFixed(2)}</div>
+                        <div className={`stock ${stock.cls}`}>{stock.text}</div>
                         <p className="description">{product.description || 'No description available.'}</p>
 
                         <div className="quantity-selector">

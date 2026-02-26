@@ -68,6 +68,7 @@ services:
       ORDER_SERVICE_URL: http://order-service:3005
       PAYMENT_SERVICE_URL: http://payment-service:3006
       INVENTORY_SERVICE_URL: http://inventory-service:3007
+      NOTIFICATION_SERVICE_URL: http://notification-service:3008
     depends_on:
       auth-service:
         condition: service_started
@@ -173,6 +174,7 @@ services:
       CART_SERVICE_URL: http://cart-service:3004
       INVENTORY_SERVICE_URL: http://inventory-service:3007
       PAYMENT_SERVICE_URL: http://payment-service:3006
+      PRODUCT_SERVICE_URL: http://product-service:3003
     depends_on:
       postgres:
         condition: service_healthy
@@ -230,8 +232,15 @@ services:
         SERVICE_PORT: 3008
     environment:
       NOTIFICATION_SERVICE_PORT: 3008
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      JWT_SECRET: dev-super-secret-key-2024
       RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
     depends_on:
+      postgres:
+        condition: service_healthy
       rabbitmq:
         condition: service_healthy
 

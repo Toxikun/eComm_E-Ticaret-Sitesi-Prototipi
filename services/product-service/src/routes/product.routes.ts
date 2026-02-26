@@ -117,6 +117,8 @@ export function productRoutes(
         upload.single('image'),
         async (req: Request, res: Response, next: NextFunction) => {
             try {
+                const authReq = req as any;
+                const sellerId: string | null = authReq.userId || null;
                 const { name, description, price, category, stock } = req.body;
 
                 if (!name || price == null || !category) {
@@ -131,16 +133,16 @@ export function productRoutes(
 
                 const id = uuidv4();
                 const result = await pool.query(
-                    `INSERT INTO products (id, name, description, price, category, image_url, stock, is_active)
-             VALUES ($1, $2, $3, $4, $5, $6, $7, true) RETURNING *`,
-                    [id, name, description || '', Number(price), category, imageUrl, Number(stock) || 0]
+                    `INSERT INTO products (id, seller_id, name, description, price, category, image_url, stock, is_active)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, true) RETURNING *`,
+                    [id, sellerId, name, description || '', Number(price), category, imageUrl, Number(stock) || 0]
                 );
 
                 const broker = getBroker();
                 if (broker) {
                     await broker.publishToExchange('ecommerce.events', 'product.created', {
                         type: 'product.created',
-                        data: result.rows[0],
+                        data: { ...result.rows[0], sellerId },
                         timestamp: new Date().toISOString(),
                     });
                 }

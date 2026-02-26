@@ -1,23 +1,16 @@
 import { useState, useEffect } from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { getCart } from '../api/cart';
+import { useCart } from '../context/CartContext';
 import './Layout.css';
 
 export default function Layout() {
     const { user, logout } = useAuth();
+    const { itemCount } = useCart();
     const location = useLocation();
     const [menuOpen, setMenuOpen] = useState(false);
-    const [cartCount, setCartCount] = useState(0);
 
     useEffect(() => { setMenuOpen(false); }, [location]);
-
-    useEffect(() => {
-        if (!user) { setCartCount(0); return; }
-        getCart(user.id)
-            .then((c) => setCartCount(c.items.length))
-            .catch(() => setCartCount(0));
-    }, [user, location]);
 
     const isActive = (path: string) => location.pathname === path ? 'active' : '';
 
@@ -37,13 +30,17 @@ export default function Layout() {
                             <Link to="/add-product" className={isActive('/add-product')}>Add Product</Link>
                         )}
 
+                        <Link to="/cart" className={`cart-badge ${isActive('/cart')}`}>
+                            🛒 Cart
+                            {itemCount > 0 && <span className="count">{itemCount}</span>}
+                        </Link>
+
                         {user ? (
                             <>
-                                <Link to="/cart" className={`cart-badge ${isActive('/cart')}`}>
-                                    🛒 Cart
-                                    {cartCount > 0 && <span className="count">{cartCount}</span>}
-                                </Link>
                                 <Link to="/orders" className={isActive('/orders')}>Orders</Link>
+                                <Link to="/notifications" className={isActive('/notifications')}>
+                                    🔔 Notifications
+                                </Link>
                                 <Link to="/profile" className={isActive('/profile')}>
                                     <span className="user-name">{user.name}</span>
                                 </Link>

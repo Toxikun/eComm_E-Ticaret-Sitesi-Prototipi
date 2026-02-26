@@ -43,6 +43,22 @@ async function start() {
                 );
             }
         });
+
+        // Subscribe to product.created events to auto-create inventory records
+        await broker.subscribe('ecommerce.events', 'inventory.product.created', 'product.created', async (msg: any) => {
+            const product = msg.data || {};
+            const productId = product.id;
+            const quantity = Number(product.stock) || 0;
+            if (!productId) return;
+
+            logger.info({ productId, quantity }, 'Consuming product.created — creating inventory record');
+            await pool.query(
+                `INSERT INTO inventory (product_id, quantity, reserved)
+                 VALUES ($1, $2, 0)
+                 ON CONFLICT (product_id) DO UPDATE SET quantity = $2, updated_at = NOW()`,
+                [productId, quantity]
+            );
+        });
     }
 
     app.listen(config.port, () => {
