@@ -64,6 +64,8 @@ Open your browser and navigate to:
 *   **Frontend UI:** `http://localhost:5173`
 *   **API Gateway:** `http://localhost:3000`
 
+> 💡 **Testing the App:** When you spin up the project for the first time, all databases are completely empty. To test out the functionality, simply go to the frontend, click "Register", and create your own fake Buyer and Seller accounts and also add a product using the Seller account to start browsing and buying products!
+
 ---
 
 ## 📝 Features Demonstrated
