@@ -1,4 +1,4 @@
-# E-Commerce Microservices Prototype (eComm_E-Ticaret-Sitesi-Prototipi)
+# E-Commerce Microservices Prototype (eComm_E-E-Commercial Website Prototype)
 
 A full-stack, event-driven E-Commerce application built with a **Microservices Architecture**. This project serves as a comprehensive prototype demonstrating modern backend practices, inter-service communication, and a sleek frontend interface.
 
